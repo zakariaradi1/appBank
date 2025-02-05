@@ -17,7 +17,7 @@ adminService = AdminManage(cnx=DataBase.get_connection())
 etlservice = Etl()
 accserv = accmanger(cnx=DataBase.get_connection())
 
-cnx = create_engine('mysql+mysqlconnector://root:zakaria1234radi%40@localhost/db_Bank')
+cnx = create_engine('mysql+mysqlconnector://root:zakaria1234radi%40@localhost.render.com:3306/db_Bank')
 df = pd.read_sql('SELECT * FROM T_Accounts', con=cnx)
 
 @app.errorhandler(HTTPException)

@@ -14,7 +14,7 @@ class DataBase:
                 DataBase.cnx = my.connect(
                     user="root",
                     password="zakaria1234radi@",
-                    host="localhost",
+                    host="10000",
                     database="db_Bank"
                 )
                 print('Connection OK')

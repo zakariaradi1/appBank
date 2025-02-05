@@ -1,0 +1,124 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #02095d, #3d2a8a, #f7a600);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.menu {
+    width: 100%;
+    max-width: 1200px;
+    position: relative;
+}
+
+.menu-toggle {
+    font-size: 24px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    color: orange;
+    
+}
+
+.menu-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    background-color: #333;
+    border-radius: 10px;
+}
+
+.menu-links a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.menu-links a:hover {
+    background-color: #45a049;
+}
+
+.menu-links.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .menu-links {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .menu-links.hidden {
+        display: flex;
+    }
+}
+
+.content {
+    max-width: 800px;
+    margin: 20px;
+    text-align: center;
+}
+
+.service {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: white;
+    color: black;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: none; /* Hidden by default */
+}
+
+.service h2 {
+    margin-top: 0;
+}
+
+.service form {
+    display: flex;
+    flex-direction: column;
+}
+
+.service form label,
+.service form input,
+.service form button {
+    margin: 10px 0;
+}
+
+.service form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.service form button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.service form button:hover {
+    background-color: #45a049;
+}

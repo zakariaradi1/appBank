@@ -1,5 +1,4 @@
 import mysql.connector as my
-from etl import * 
 from Models import *
 from datetime import datetime
 from flask import request

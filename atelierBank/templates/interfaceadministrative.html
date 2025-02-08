@@ -31,7 +31,6 @@
                 <a href="#create">Créer</a>
                 <a href="#list">Lister</a>
                 <a href="#delete">Supprimer</a>
-                <a href="#dashboard">Afficher les Dashboard</a>
                 <a href="#Archive">Afficher l archive d'un compte</a>
             </div>
         </div>
@@ -105,18 +104,6 @@
                     <input type="email" id="delete-account" name="email" placeholder="Enter account Email">
                     <button type="submit">Submit</button>
                 </form>
-            </div>
-            <div id="dashboard" class="service">
-                <h2>Afficher les Dashboard</h2>
-                <a href="{{ url_for('dashboard1') }}" target="_blank">
-                    <button type="button">View Dashboard</button>
-                </a>
-                <a href="{{ url_for('dashboard2') }}" target="_blank">
-                    <button type="button">View Dashboard</button>
-                </a>
-                <a href="{{ url_for('dashboard3') }}" target="_blank">
-                    <button type="button">View Dashboard</button>
-                </a>
             </div>
             <div id="Archive" class="service">
                 <h2>Archive of an Account</h2>

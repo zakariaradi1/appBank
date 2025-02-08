@@ -14,7 +14,6 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
 
 adminService = AdminManage(cnx=DataBase.get_connection())
-etlservice = Etl()
 accserv = accmanger(cnx=DataBase.get_connection())
 
 cnx = create_engine('mysql+mysqlconnector://root:zakaria1234radi%40@localhost.render.com:10000/db_Bank')
@@ -24,81 +23,6 @@ df = pd.read_sql('SELECT * FROM T_Accounts', con=cnx)
 def handle_exception(e):
     return render_template('error.html', error=str(e.description)), e.code
 
-@app.route("/dashboard1", methods=['GET'])
-def dashboard1():
-    try:
-        results = adminService.count_Accounts_by_type()
-        if not results:
-            abort(404, description="No data available for account types")
-        df = pd.DataFrame(results, columns=['Account_type', 'Account_count'])
-        plt.figure()
-        df.plot(kind='bar', x='Account_type', y='Account_count', legend=False, color='skyblue')
-        plt.title("Nombre de comptes par type")
-        plt.xlabel("Type de compte")
-        plt.ylabel("Nombre de comptes")
-        plt.tight_layout()
-        img = BytesIO()
-        plt.savefig(img, format='png')
-        img.seek(0)
-        plt.close()
-        return Response(img, content_type='image/png')
-    except Exception as e:
-        abort(500, description=str(e))
-
-@app.route("/dashboard2", methods=['GET'])
-def dashboard2():
-    try:
-        results = adminService.count_Accounts_by_year()
-        if not results:
-            abort(404, description="No data available for accounts by year")
-        df = pd.DataFrame(results, columns=['creation_date', 'Accounts_count'])
-        df['creation_date'] = pd.to_datetime(df['creation_date'])
-        plt.figure(figsize=(10,6))
-        plt.plot(df['creation_date'], df['Accounts_count'], marker='o', color='skyblue')
-        plt.title("Nombre de comptes créés par date")
-        plt.xlabel("Date de création")
-        plt.ylabel("Nombre de comptes")
-        plt.xticks(rotation=45, ha='right') 
-        plt.tight_layout()
-        img = BytesIO()
-        plt.savefig(img, format='png')
-        img.seek(0)
-        plt.close()
-        return Response(img, content_type='image/png')
-    except Exception as e:
-        abort(500, description=str(e))
-
-@app.route("/dashboard3", methods=['GET'])
-def dashboard3():
-    try:
-        results = adminService.count_Accounts_by_balance()
-        if not results:
-            abort(404, description="No data available for accounts by balance")
-        df = pd.DataFrame(results, columns=['Balance_Range', 'Account_count'])
-        plt.figure()
-        df.plot(kind='bar', x='Balance_Range', y='Account_count', legend=False, color='skyblue')
-        plt.title("Nombre de comptes par tranche de solde")
-        plt.xlabel("Tranche de solde")
-        plt.ylabel("Nombre de comptes")
-        plt.tight_layout()
-        img = BytesIO()
-        plt.savefig(img, format='png')
-        img.seek(0)
-        plt.close()
-        return Response(img, content_type='image/png')
-    except Exception as e:
-        abort(500, description=str(e))
-
-def initialize_database():
-    try:
-        print("Loading data from CSV into the database...")
-        etlservice.load() 
-        print("Data loaded successfully!")
-    except Exception as e:
-        print(f"Error loading data: {str(e)}")
-        abort(500, description="Error loading data into the database")
-
-initialize_database()
 
 def apply_monthly_updates_manually():
     try:
@@ -244,20 +168,6 @@ def list():
         print("Error:", str(e)) 
         return render_template("interfaceadministrative.html", error=str(e))
 
-@app.route("/auth", methods=['POST'])
-def auth():
-    try:
-        login = request.form.get("Email")
-        password = request.form.get("password")
-        if not login or not password:
-            return render_template('index.html', error="Email and password are required")
-        account = adminService.auth(login, password) #type:ignore
-        if account is None:
-            return render_template('index.html', error="Login or password incorrect")
-        session['Email'] = login
-        return redirect(url_for('Acceuil'))
-    except Exception as e:
-        return render_template('index.html', error=str(e))
 
 @app.route("/interfacuser", methods=['GET', 'POST'])
 def User():

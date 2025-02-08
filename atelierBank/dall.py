@@ -23,7 +23,6 @@ class DataBase:
                 return None
         return DataBase.cnx
 
-IPINFO_TOKEN = 'f8099caac4fc4b'
 class AdminDao:
     def __init__(self, cnx):
         self.cnx = cnx
@@ -53,53 +52,16 @@ class AdminDao:
             return None   
 
     def loguser(self, email: str, password: str) -> dict | None:
-        # Automatically fetch the client's IP address
-        ip_address = request.remote_addr
-        print(f"IP Address: {ip_address}")  # Debugging: Print the IP address
-
-        # Query to check if the user exists
         query = "SELECT Account_type FROM T_Accounts WHERE Email=%s AND password=%s;"
         if self.cnx is not None:
             cursor = self.cnx.cursor(dictionary=True)
             cursor.execute(query, (email, password))
             row = cursor.fetchone()
-
             if row is not None:
-                
-                try:
-                    response = requests.get(f'https://ipinfo.io/{ip_address}/json?token={IPINFO_TOKEN}') 
-                    location_data = response.json()
-                    city = location_data.get('city')
-                    country = location_data.get('country')
-                    if city is None or country is None:
-                        location = "Unknown"
-                    else:
-                        location = f"{city}, {country}"
-                except Exception as e:
-                    print(f"Error fetching location: {e}")
-                    location = "Unknown"
-                self.log_user_location(email, ip_address, location)  # type: ignore
                 return row
             return None
         return None
 
-    def log_user_location(self, email: str, ip_address: str, location: str) -> bool:
-        try:
-           
-            cnx = create_engine('mysql+mysqlconnector://root:zakaria1234radi%40@localhost/db_Bank')
-
-            data = {
-                "email": [email],
-                "ip_address": [ip_address],
-                "location": [location]
-            }
-            df = ps.DataFrame(data)
-            df.to_sql(name='T_Locations', con=cnx, if_exists='append', index=False)
-
-            return True
-        except Exception as e:
-            print(f"Error logging user location: {e}")
-            return False
 
     
     def Archive(self,email:str)->list[Archive]:
@@ -239,58 +201,6 @@ class AdminDao:
                 return True
         return False
  
-    def count_Accounts_by_type(self):
-        if self.cnx is not None:
-            db = self.cnx.cursor()
-            db.execute("""
-                SELECT Account_type, COUNT(*) AS Account_count
-                FROM T_Accounts
-                GROUP BY Account_type;
-            """)
-            results = db.fetchall()
-            return results
-        else:
-            print("Connection not available")
-            return None
-
-    def count_Accounts_by_year(self):
-        if self.cnx is not None:
-            db = self.cnx.cursor()
-            query = """
-                SELECT DATE(created_at) AS creation_date, COUNT(*) AS Accounts_count
-                FROM T_Accounts
-                GROUP BY creation_date
-                ORDER BY creation_date;
-            """
-            db.execute(query)
-            results = db.fetchall()
-            return results
-        else:
-            print("Connection not available")
-            return None
-
-    def count_Accounts_by_balance(self):
-        if self.cnx is not None:
-            db = self.cnx.cursor()
-            query = """
-                SELECT
-                    CASE
-                        WHEN balance <= 10000 THEN 'Below 10,000'
-                        WHEN balance > 10000 AND balance <= 100000 THEN 'Between 10,000 and 100,000'
-                        ELSE 'Above 100,000'
-                    END AS Balance_Range,
-                    COUNT(*) AS Account_count
-                FROM T_Accounts
-                GROUP BY Balance_Range;
-            """
-            db.execute(query)
-            results = db.fetchall()
-            return results
-        else:
-            print("Connection not available")
-            return None
-        
-
     def get_accounts(self):
         accounts = []
         query = "SELECT * FROM T_Accounts"

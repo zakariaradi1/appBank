@@ -8,9 +8,7 @@ class AdminManage:
         
     def insert_in_db(self,email:str,balance:float,type:str,password:str)->bool:
         return self.adminDao.insert_in_db(email,balance,type,password)
-    def count_Accounts_by_type(self):
-        return self.adminDao.count_Accounts_by_type()
-    
+        
     def Archive(self,email:str)->list[Archive]:
         return self.adminDao.Archive(email)
     
@@ -30,15 +28,6 @@ class AdminManage:
         return self.adminDao.delete(email)
     def getAccounts(self):
         return self.adminDao.getAccounts()
-    def count_Accounts_by_year(self):
-        return self.adminDao.count_Accounts_by_year()
-    def count_Accounts_by_balance(self):
-        return self.adminDao.count_Accounts_by_balance()
-    
-class Etl:
-    @staticmethod
-    def load():
-        return EtlDao.load()
     
 class Database:
     @staticmethod

@@ -1,2 +1,3 @@
 #!/bin/bash
-gunicorn -w 4 -b 0.0.0.0:$PORT "atbaco.app:app"
+cd atbaco/app
+gunicorn -w 4 -b 0.0.0.0:$PORT "app:app"

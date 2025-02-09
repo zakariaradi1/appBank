@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/interfaceadministrative.css') }}">
+    <title>Bank Admin Interface</title>
+</head>
+<body>
+    <header>
+        <div class="notification-bell" onclick="toggleNotifications()">
+            <i class="fas fa-bell"></i>
+            {% if otp %}
+                <span class="badge">1</span>
+            {% endif %}
+        </div>
+
+        <div class="notification-dropdown" id="notificationDropdown">
+            {% if otp %}
+                <div class="notification-item otp">
+                    <strong>OTP for verification:</strong> {{ otp }}
+                    <div class="notification-actions">
+                        <button class="delete-button" onclick="deleteMessage()">Delete Message</button>
+                        <button class="not-me-button">It's Not Me</button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <h1>Welcome to Your Bank Admin Space</h1>
+
+    {% if error %}
+        <div class="error-message" style="color: red; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+            <strong>Error: </strong> {{ error }}
+        </div>
+    {% endif %}
+
+    {% if message %}
+        <div class="success-message" style="color: green; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+            <strong>Success: </strong> {{ message }}
+        </div>
+    {% endif %}
+
+    <div class="menu">
+        <button class="menu-toggle">&#9776; Choose Option</button>
+        <div class="menu-links hidden">
+            <a href="#withdraw"><i class="fas fa-money-bill-wave"></i> Withdraw</a>
+            <a href="#deposit"><i class="fas fa-piggy-bank"></i> Deposit</a>
+            <a href="#transfer"><i class="fas fa-exchange-alt"></i> Transfer</a>
+            <a href="#create"><i class="fas fa-plus-circle"></i> Create Account</a>
+            <a href="#list"><i class="fas fa-list"></i> List Accounts</a>
+            <a href="#delete"><i class="fas fa-trash"></i> Delete Account</a>
+            <a href="#dashboard"><i class="fas fa-chart-line"></i> View Dashboards</a>
+            <a href="#archive"><i class="fas fa-archive"></i> View Archive</a>
+            <a href="#receiptpdf"><i class="fas fa-download"></i> Download Receipt</a>
+            <a href="#receiptpdfv"><i class="fas fa-eye"></i> View Receipt</a>
+            <a href="#logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <div id="withdraw" class="service">
+            <h2>Withdraw</h2>
+            <form action="{{ url_for('withdraw') }}" method="post">
+                <label for="withdraw-account">Account Email:</label>
+                <input type="email" id="withdraw-account" name="email" placeholder="Enter account email" required>
+                <label for="withdraw-amount">Amount:</label>
+                <input type="number" id="withdraw-amount" name="amount" min="1" placeholder="Enter amount" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div id="deposit" class="service">
+            <h2>Deposit</h2>
+            <form action="{{ url_for('deposit') }}" method="post">
+                <label for="deposit-account">Account Email:</label>
+                <input type="email" id="deposit-account" name="email" placeholder="Enter account email" required>
+                <label for="deposit-amount">Amount:</label>
+                <input type="number" id="deposit-amount" name="amount" min="10" placeholder="Enter amount" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div id="transfer" class="service">
+            <h2>Transfer</h2>
+            <form action="{{ url_for('transfer') }}" method="post">
+                <label for="transfer-amount">Amount:</label>
+                <input type="number" id="transfer-amount" name="amount" min="2" placeholder="Enter amount" required>
+                <label for="transfer-from-account">From Account:</label>
+                <input type="email" id="transfer-from-account" name="from_account" placeholder="Enter email account" required>
+                <label for="transfer-to-account">To Account:</label>
+                <input type="email" id="transfer-to-account" name="to_account" placeholder="Enter email account" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div id="create" class="service">
+            <h2>Create Account</h2>
+            <form method="POST" action="/create">
+                <label for="create-name">Email:</label>
+                <input type="email" id="create-name" name="Email" placeholder="Enter email" required>
+                <label for="create-balance">Balance:</label>
+                <input type="number" id="create-balance" name="balance" placeholder="Enter balance" required>
+                <label for="create-type">Type:</label>
+                <select id="create-type" name="Account_type" required>
+                    <option value="checking">Checking</option>
+                    <option value="savings">Saving</option>
+                </select>
+                <label for="create-password">Password:</label>
+                <input type="password" id="create-password" name="password" placeholder="Enter password" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div id="list" class="service">
+            <h2>List Accounts</h2>
+            <form action="{{ url_for('list') }}" method="get">
+                <button type="submit">List Accounts</button>
+            </form>
+            {% if accounts %}
+                <ul>
+                    {% for account in accounts %}
+                        <li>{{ account.Email }} - {{ account.Account_type }} - {{ account.balance }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div id="delete" class="service">
+            <h2>Delete Account</h2>
+            <form action="{{ url_for('delete') }}" method="post">
+                <label for="delete-account">Account Email:</label>
+                <input type="email" id="delete-account" name="email" placeholder="Enter account email" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div id="dashboard" class="service">
+            <h2>View Dashboards</h2>
+            <a href="{{ url_for('dashboard1') }}" target="_blank">
+                <button type="button">View Dashboard 1</button>
+            </a>
+            <a href="{{ url_for('dashboard2') }}" target="_blank">
+                <button type="button">View Dashboard 2</button>
+            </a>
+            <a href="{{ url_for('dashboard3') }}" target="_blank">
+                <button type="button">View Dashboard 3</button>
+            </a>
+        </div>
+
+        <div id="archive" class="service">
+            <h2>View Archive</h2>
+            <form action="{{ url_for('Archivee') }}" method="post">
+                <label for="archive">Account Email:</label>
+                <input type="email" id="archive" name="email" placeholder="Enter account email" value="{{ email }}" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>    
+        <div id="receiptpdf" class="service">
+            <h2>Download or View Receipt</h2>
+            <form action="{{ url_for('generate_pdfadm') }}" method="post">
+                <label for="receiptpdf">Account Email:</label>
+                <input type="email" name="email" placeholder="Enter account email" value="{{ email }}" required>
+                <button type="submit" name="download" value="true">Download Archive Report</button>
+            </form>
+        </div>
+        <div id="receiptpdfv" class="service">
+            <form action="{{ url_for('generate_pdfadm') }}" method="post" target="_blank">
+                <label for="receiptpdfv">Account Email:</label>
+                <input type="email" name="email" placeholder="Enter account email" value="{{ email }}" required>
+                <button type="submit" name="view" value="true">View Archive Report</button>
+            </form>
+        </div>     
+        <div id="logout" class="service">
+            <form action="{{ url_for('logout') }}" method="post">
+                <button type="submit"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const toggleButton = document.querySelector('.menu-toggle');
+        const menuLinks = document.querySelector('.menu-links');
+        const services = document.querySelectorAll('.service');
+
+        toggleButton.addEventListener('click', () => {
+            menuLinks.classList.toggle('hidden');
+        });
+
+        menuLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', event => {
+                event.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+
+                services.forEach(service => {
+                    if (service.id === targetId) {
+                        const isHidden = service.style.display === 'none' || window.getComputedStyle(service).display === 'none';
+                        service.style.display = isHidden ? 'block' : 'none';
+                    } else {
+                        service.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        function toggleNotifications() {
+            const dropdown = document.getElementById("notificationDropdown");
+            dropdown.classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.notification-bell') && !event.target.matches('.notification-bell *')) {
+                const dropdown = document.getElementById("notificationDropdown");
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        }
+
+        function deleteMessage() {
+            const notificationItem = document.querySelector('.notification-item.otp');
+            if (notificationItem) {
+                notificationItem.remove();
+            }
+
+            const badge = document.querySelector('.notification-bell .badge');
+            if (badge) {
+                badge.style.display = 'none';
+            }
+            fetch('/delete-otp', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
